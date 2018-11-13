@@ -16,7 +16,7 @@
  * stepper (6 - 12V):
  * - more pattern variations.
  * 
- * solenoid (12V):
+ * solenoid valves (12V):
  * - haven't tested yet
  * 
  */
@@ -37,13 +37,14 @@ Servo myservo;
 
 // for random liquid selection
 int solA, solB, solAforB;
-int solCounts = 8;
+const int solCounts = 8;
 
-// previous position of A and B
-int preA = 1;
-int preB = 5;
+// home position of A and B; constant right now
+int homeA = 0;
+int homeB = 4;
+// if defining current positions of A & B, posB = (posA + 4) % 8
 
-// to calculate turning direction and time
+// to calculate turning direction and time; all distances are depended on A
 int distanceA, distanceB, distanceBack;
 int turnTimeA, turnTimeB, turnTimeBack;
 
@@ -87,31 +88,28 @@ void loop() {
     Serial.println("servo button on");
 
     // pick the liquid for A and B randomly
-    solA = int(random(1, solCounts + 1));
-    solB = int(random(1, solCounts + 1));
+    solA = int(random(0, solCounts));
+    solB = int(random(0, solCounts));
     Serial.print("A: "); Serial.println(solA);
     Serial.print("B: "); Serial.println(solB);
 
     // calculate turning direction and time
-    distanceA = solA - preA;
-    if (solB < 5) {
-      solAforB = solB + 4;
-    } else {
-      solAforB = solB - 4;
-    }
+    distanceA = solA - homeA;
+    solAforB = (solB + 4) % 8; 
     distanceB = solAforB - solA;
-    distanceBack = preA - solAforB;
+    distanceBack = homeA - solAforB;
     Serial.print("A': "); Serial.println(solAforB);
     Serial.print("distance A: "); Serial.println(distanceA);
     Serial.print("distance B: "); Serial.println(distanceB);
     Serial.print("distance Back: "); Serial.println(distanceBack);
 
+    // rough turning time; cannot use finally
     turnTimeA = TURN_TIME / 8 * abs(distanceA);
     turnTimeB = TURN_TIME / 8 * abs(distanceB);
     turnTimeBack = TURN_TIME / 8 * abs(distanceBack);
 
     // turn to get liquid A
-    if (solA == 1) {
+    if (solA == 0) {
       // Keep still for 5 sec
       myservo.writeMicroseconds(1415);
       delay(5000);
@@ -125,7 +123,7 @@ void loop() {
       delay(5000);     
     }
 
-    // the solenoid dispsenses liquid A
+    // the solenoid valve dispsenses liquid A
 
     // turn to get liquid B
     if (distanceB == 0) {
@@ -149,14 +147,13 @@ void loop() {
       delay(5000);
     }
 
-    // the solenoid dispsenses liquid B
+    // the other solenoid valve dispsenses liquid B
 
     // turn to home position and stop
     myservo.write(180);
     delay(turnTimeBack);
     // stop for 5 sec
     myservo.writeMicroseconds(1415);
-    delay(5000);
     Serial.println("liquid part done");
 
   }
