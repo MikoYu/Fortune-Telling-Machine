@@ -87,10 +87,6 @@ void setup() {
   myservo.attach(6);
   // Initially the servo must be stopped
   myservo.writeMicroseconds(1415);
-
-  // better to have a "home" position (with a sensors; photocell, for eg.)
-  // for the servo: calibrate to home position (A: sol no.1; B: sol no. 5)
-
 }
 
 void loop() {
