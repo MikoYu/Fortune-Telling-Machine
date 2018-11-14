@@ -1,9 +1,5 @@
 void stepperProcess() {
 
-  // read the state of the button and check if it is pressed
-  if (digitalRead(stepperBtnPin) == HIGH) {
-    Serial.println("stepper button on");
-
     // Pick a pattern program randomly
     pattern = int(random(1, patternCounts + 1));
     Serial.println(pattern);
@@ -45,15 +41,6 @@ void stepperProcess() {
     // also need go back to "home" position when "forced shutdown"
 
     Serial.println("pattern part done");
-
-  }
-  else {
-    //Serial.println("pushButton off");
-
-  }
-
-  // delay in between reads for stability
-  delay(1);
   
 }
 

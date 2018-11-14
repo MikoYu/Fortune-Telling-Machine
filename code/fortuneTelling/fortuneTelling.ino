@@ -69,6 +69,7 @@ int patternCounts = 4; // change counts here
 //////////// setting up multitasking ////////////
 unsigned long previousMillis = 0;
 const long ldrInterval = 60;
+int stepCount = 0;
 
 //////////// start running ////////////
 
@@ -107,10 +108,29 @@ void loop() {
 
     // machine process
 
-    servoProcess();
-    stepperProcess();
+    // read the state of the button and check if it is pressed
+    if (digitalRead(servoBtnPin) == HIGH) {
+      Serial.println("servo button on");
+
+      // check if need to go back to home position (A: sol no.1; B: sol no. 5)
+      if (servoLdrReading > 300) {
+        myservo.write(0);
+      }
+
+      servoProcess();
+    }
+
+    // delay in between reads for stability
+    delay(1);
+
+    // read the state of the button and check if it is pressed
+    if (digitalRead(stepperBtnPin) == HIGH) {
+      Serial.println("stepper button on");
+      stepperProcess();
+    }
+
+    // delay in between reads for stability
+    delay(1);
 
   }
-
-}
 
