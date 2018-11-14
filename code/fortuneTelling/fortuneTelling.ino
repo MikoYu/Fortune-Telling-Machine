@@ -1,25 +1,25 @@
 /*
- * Nov 13 Tuesday
- * - got two motors work on the same UNO board;
- * 
- * both: 
- * - need sensors for locating:
- *    - servo turns depend on the time it costs -> positions are not precise;
- *    - no home positions, can't calibrate.
- * - replace delay functions.
- * - need mechanisms to shutdown while running; still, keep only one motor running at a time.
- * 
- * servo (6V / 7.2V):
- * - not stable each time at the beginning; need to figure out why.
- * - may change a smarter way to rotate to its target (to take shorter time.)
- * 
- * stepper (6 - 12V):
- * - more pattern variations.
- * 
- * solenoid valves (12V):
- * - haven't tested yet
- * 
- */
+   Nov 13 Tuesday
+   - got two motors work on the same UNO board;
+
+   both:
+   - need sensors for locating:
+      - servo turns depend on the time it costs -> positions are not precise;
+      - no home positions, can't calibrate.
+   - replace delay functions.
+   - need mechanisms to shutdown while running; still, keep only one motor running at a time.
+
+   servo (6V / 7.2V):
+   - not stable each time at the beginning; need to figure out why.
+   - may change a smarter way to rotate to its target (to take shorter time.)
+
+   stepper (6 - 12V):
+   - more pattern variations.
+
+   solenoid valves (12V):
+   - haven't tested yet
+
+*/
 
 #include <Servo.h>
 #include <Stepper.h>
@@ -53,10 +53,20 @@ int turnTimeA, turnTimeB, turnTimeBack;
 const int stepsPerRevolution = 200;
 Stepper moldStepper(stepsPerRevolution, 8, 9, 10, 11);
 
+// counters for home locating / shutdown
+int stepCountHome = 0;
+int stepCountPattern = 0;
+
 // to randomly select a pattern
 int pattern;
 int patternCounts = 4; // change counts here
 
+//////////// setting up no delay ////////////
+
+unsigned long previousMillis = 0;  // will store last time...
+
+// constant won't change:
+const long interval = 5000;  // it will stop for 5 seconds.
 
 //////////// start running ////////////
 
@@ -81,145 +91,12 @@ void setup() {
 
 void loop() {
 
+  unsigned long currentMillis = millis();
+
   //////////// servo ////////////
 
-  // read the state of the button and check if it is pressed
-  if (digitalRead(servoBtnPin) == HIGH) {
-    Serial.println("servo button on");
-
-    // pick the liquid for A and B randomly
-    solA = int(random(0, solCounts));
-    solB = int(random(0, solCounts));
-    Serial.print("A: "); Serial.println(solA);
-    Serial.print("B: "); Serial.println(solB);
-
-    // calculate turning direction and time
-    distanceA = solA - homeA;
-    solAforB = (solB + 4) % 8; 
-    distanceB = solAforB - solA;
-    distanceBack = homeA - solAforB;
-    Serial.print("A': "); Serial.println(solAforB);
-    Serial.print("distance A: "); Serial.println(distanceA);
-    Serial.print("distance B: "); Serial.println(distanceB);
-    Serial.print("distance Back: "); Serial.println(distanceBack);
-
-    // rough turning time; cannot use finally
-    turnTimeA = TURN_TIME / 8 * abs(distanceA);
-    turnTimeB = TURN_TIME / 8 * abs(distanceB);
-    turnTimeBack = TURN_TIME / 8 * abs(distanceBack);
-
-    // turn to get liquid A
-    if (solA == 0) {
-      // Keep still for 5 sec
-      myservo.writeMicroseconds(1415);
-      delay(5000);
-    }
-    else {
-      // turn clockwise to get liquid A
-      myservo.write(0);
-      delay(turnTimeA);
-      // stop for 5 sec
-      myservo.writeMicroseconds(1415);
-      delay(5000);     
-    }
-
-    // the solenoid valve dispsenses liquid A
-
-    // turn to get liquid B
-    if (distanceB == 0) {
-      // leep still for 5 sec
-      myservo.writeMicroseconds(1415);
-      delay(5000);
-    }
-    else if (distanceB > 0) {
-      // turn clockwise to get liquid B
-      myservo.write(0);
-      delay(turnTimeB);
-      // stop for 5 sec
-      myservo.writeMicroseconds(1415);
-      delay(5000);
-    } else {
-      // turn clockwise to get liquid B
-      myservo.write(180);
-      delay(turnTimeB);
-      // stop for 5 sec
-      myservo.writeMicroseconds(1415);
-      delay(5000);
-    }
-
-    // the other solenoid valve dispsenses liquid B
-
-    // turn to home position and stop
-    myservo.write(180);
-    delay(turnTimeBack);
-    // stop for 5 sec
-    myservo.writeMicroseconds(1415);
-    Serial.println("liquid part done");
-
-  }
-  else {
-    //Serial.println("pushButton off");
-  }
-
-  // delay in between reads for stability
-  delay(1);
-
-  //////////// stepper ////////////
-
-  // read the state of the button and check if it is pressed
-  if (digitalRead(stepperBtnPin) == HIGH) {
-    Serial.println("stepper button on");
-
-    // Pick a pattern program randomly
-    pattern = int(random(1, patternCounts + 1));
-    Serial.println(pattern);
-
-    // Exert the randomly selected program
-    switch (pattern) {
-      case 1:
-        // keep the mold static
-        delay(5000);
-        break;
-      case 2:
-        // spin clockwise for 3 rounds in 9 sec
-        moldStepper.setSpeed(20);
-        moldStepper.step(stepsPerRevolution * 3);
-        delay(500);
-        break;
-      case 3:
-        // spin clockwise for 1 round, then counter-clockwise for 1 round, 4 sec each round
-        moldStepper.setSpeed(15);
-        moldStepper.step(stepsPerRevolution);
-        delay(500);
-        moldStepper.step(-stepsPerRevolution);
-        delay(500);
-        break;
-      case 4:
-        // - 0.5, + 1, - 0.5; 4 sec/roundd
-        moldStepper.setSpeed(15);
-        moldStepper.step(stepsPerRevolution * -0.5);
-        delay(500);
-        moldStepper.step(stepsPerRevolution);
-        delay(500);
-        moldStepper.step(stepsPerRevolution * -0.5);
-        delay(500);
-        break;
-
-    }
-
-    // better to stop the motor if there's another button on
-    // also need go back to "home" position when "forced shutdown"
-
-    Serial.println("pattern part done");
-
-  }
-  else {
-    //Serial.println("pushButton off");
-
-  }
-
-  // delay in between reads for stability
-  delay(1);
+  servoProcess();
+  stepperProcess();
 
 }
 
