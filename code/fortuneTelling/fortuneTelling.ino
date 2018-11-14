@@ -28,6 +28,11 @@
 const int servoBtnPin = 2;
 const int stepperBtnPin = 3;
 
+// set up the ldrs for home locating; the cell + 10K pulldown
+const int servoLdrPin = A0;
+const int stepperLdrPin = A1;
+int servoLdrReading, servoLdrReading;
+
 //////////// setting up the servo ////////////
 
 Servo myservo;
@@ -61,12 +66,9 @@ int stepCountPattern = 0;
 int pattern;
 int patternCounts = 4; // change counts here
 
-//////////// setting up no delay ////////////
-
-unsigned long previousMillis = 0;  // will store last time...
-
-// constant won't change:
-const long interval = 5000;  // it will stop for 5 seconds.
+//////////// setting up multitasking ////////////
+unsigned long previousMillis = 0;
+const long ldrInterval = 60;
 
 //////////// start running ////////////
 
@@ -78,6 +80,8 @@ void setup() {
   // make the buttons' pin an input
   pinMode(servoBtnPin, INPUT);
   pinMode(stepperBtnPin, INPUT);
+  pinMode(servoLdrPin, INPUT);
+  pinMode(stepperLdrPin, INPUT);
 
   // servo info
   myservo.attach(6);
@@ -93,10 +97,24 @@ void loop() {
 
   unsigned long currentMillis = millis();
 
-  //////////// servo ////////////
+  if (currentMillis - previousMillis >= sensorInterval) {
+    previousMillis = currentMillis;
 
-  servoProcess();
-  stepperProcess();
+    // read ldr data
+    servoLdrReading = analogRead(servoLdrPin);
+    stepperLdrReading = analogRead(stepperLdrPin);
+    Serial.print("servo ldr reading = ");
+    Serial.println(servoLdrReading);
+    Serial.print("stepper ldr reading = ");
+    Serial.println(stepperLdrReading);
+
+
+    // machine process
+
+    servoProcess();
+    stepperProcess();
+
+  }
 
 }
 
