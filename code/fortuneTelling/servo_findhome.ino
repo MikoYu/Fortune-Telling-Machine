@@ -10,7 +10,7 @@ void servoFindhome() {
     Serial.println(servoLdrReading);
 
     // check if need to go back to home position (A: sol no.1; B: sol no. 5)
-    if (servoLdrReading > ldrThreshold) {
+    if (servoLdrReading > servoLdrThreshold) {
       for (int servoTimer = 0; servoTimer < 2000; servoTimer += 100) {
         myservo.write(0);
         delay(50);
@@ -21,7 +21,7 @@ void servoFindhome() {
         Serial.print("servo ldr reading = ");
         Serial.println(servoLdrReading);
 
-        if (servoLdrReading <= ldrThreshold) {
+        if (servoLdrReading <= servoLdrThreshold) {
           Serial.println("servo back home");
           break;
         }

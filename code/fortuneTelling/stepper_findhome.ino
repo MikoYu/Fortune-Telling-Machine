@@ -12,7 +12,7 @@ void stepperFindhome() {
     Serial.println(stepperLdrReading);
 
     // check if need to go back to home position (A: sol no.1; B: sol no. 5)
-    if (stepperLdrReading > ldrThreshold) {
+    if (stepperLdrReading > stepperLdrThreshold) {
       for (int stepperCounts = 0; stepperCounts < 20; stepperCounts ++) {
         moldStepper.setSpeed(20);
         moldStepper.step(stepsPerRevolution / 20);
@@ -21,7 +21,7 @@ void stepperFindhome() {
         Serial.print("stepper ldr reading = ");
         Serial.println(stepperLdrReading);
 
-        if (stepperLdrReading <= ldrThreshold) {
+        if (stepperLdrReading <= stepperLdrThreshold) {
           Serial.println("stepper back home");
           break;
         }

@@ -33,7 +33,8 @@ const int stepperBtnPin = 3;
 const int servoLdrPin = A0;
 const int stepperLdrPin = A1;
 int servoLdrReading, stepperLdrReading;
-const int ldrThreshold = 250;
+const int servoLdrThreshold = 250;
+const int stepperLdrThreshold = 350;
 
 // set up the rotatry encoder
 #define outputA 6
