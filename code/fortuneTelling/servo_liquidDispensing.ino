@@ -36,6 +36,11 @@ void servoLiquidDispensing() {
         rtCounter = 0;
         break;
       }
+
+      // to shutdown
+      //      if (digitalRead(servoBtnPin) == HIGH) {
+      //        break;
+      //      }
     }
   }
   delay(liquidDispensingTime);  // wait 5 sec for valve; use other funcs later
@@ -44,7 +49,7 @@ void servoLiquidDispensing() {
 
   // turn to get liquid B
   if (distanceB == 0) {
-    // leep still for 5 sec
+    // keep still for 5 sec
     myservo.writeMicroseconds(stopSpeed);
   }
   else if (distanceB > 0) {
@@ -58,6 +63,12 @@ void servoLiquidDispensing() {
         rtCounter = 0;
         break;
       }
+
+      // to shutdown
+      //      if (digitalRead(servoBtnPin) == HIGH) {
+      //        break;
+      //      }
+
     }
   } else {
     // turn counterclockwise to get liquid B, in max. 15 sec
@@ -70,6 +81,11 @@ void servoLiquidDispensing() {
         rtCounter = 0;
         break;
       }
+
+      // to shutdown
+      //      if (digitalRead(servoBtnPin) == HIGH) {
+      //        break;
+      //      }
     }
   }
   delay(liquidDispensingTime);  // wait 5 sec for valve; use other funcs later

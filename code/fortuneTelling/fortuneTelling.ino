@@ -68,10 +68,6 @@ int turnDegreeA, turnDegreeB, turnDegreeBack;
 const int stepsPerRevolution = 200;
 Stepper moldStepper(stepsPerRevolution, 8, 9, 10, 11);
 
-// counters for home locating / shutdown
-int stepCountHome = 0;
-int stepCountPattern = 0;
-
 // to randomly select a pattern
 int pattern;
 int patternCounts = 4; // change counts here
@@ -80,8 +76,6 @@ int patternCounts = 4; // change counts here
 
 unsigned long previousMillis = 0;
 const long ldrInterval = 50;
-int stepCount = 0;
-
 
 //////////// start running ////////////
 
