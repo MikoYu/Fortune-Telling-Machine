@@ -5,18 +5,20 @@
    - stepper can be shutdown
 
    in need:
-   both:
-   - servo need mechanisms to be shutdown while running
+
    
    servo (6V / 7.2V):
+   - need mechanisms to be shutdown while running
    - not stable each time at the beginning; need to figure out why.
    - may change a smarter way to rotate to its target (to take shorter time.)
 
    stepper (6 - 12V):
    - more pattern variations.
+   - need pulling up?
 
    solenoid valves (12V):
    - haven't tested yet
+   - need pulling up
 
 */
 
