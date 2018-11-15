@@ -1,7 +1,5 @@
 void servoFindhome() {
-
   unsigned long currentMillis = millis();
-
   if (currentMillis - previousMillis >= ldrInterval) {
     previousMillis = currentMillis;
 

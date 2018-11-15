@@ -16,10 +16,9 @@ void servoLiquidDispensing() {
   Serial.print("distance B: "); Serial.println(distanceB);
   Serial.print("distance Back: "); Serial.println(distanceBack);
 
-  // rough turning time; cannot use finally
-  turnTimeA = TURN_TIME / 8 * abs(distanceA);
-  turnTimeB = TURN_TIME / 8 * abs(distanceB);
-  turnTimeBack = TURN_TIME / 8 * abs(distanceBack);
+  turnDegreeA = abs(distanceA) * 5;
+  turnDegreeB = abs(distanceB) * 5;
+  turnDegreeBack = abs(distanceBack) * 5;
 
   // turn to get liquid A
   if (solA == 0) {
@@ -28,12 +27,20 @@ void servoLiquidDispensing() {
     delay(5000);
   }
   else {
-    // turn clockwise to get liquid A
-    myservo.write(0);
-    delay(turnTimeA);
-    // stop for 5 sec
-    myservo.writeMicroseconds(stopSpeed);
-    delay(5000);
+    // turn clockwise to get liquid A, in max. 15 sec
+    for (int servoTimer = 0; servoTimer < 150000; servoTimer += 50) {
+      rotaryEncoder();
+      if (abs(rtCounter) < turnDegreeA) {
+        myservo.write(0);
+      } else {
+        myservo.writeMicroseconds(stopSpeed);
+        rtCounter = 0;
+        break;
+      }
+    }
+
+    delay(5000);  // wait 5 sec for valve; use other funcs later
+
   }
 
   // the solenoid valve dispsenses liquid A
@@ -45,28 +52,46 @@ void servoLiquidDispensing() {
     delay(5000);
   }
   else if (distanceB > 0) {
-    // turn clockwise to get liquid B
-    myservo.write(0);
-    delay(turnTimeB);
-    // stop for 5 sec
-    myservo.writeMicroseconds(stopSpeed);
-    delay(5000);
+    // turn clockwise to get liquid B, in max. 15 sec
+    for (int servoTimer = 0; servoTimer < 150000; servoTimer += 50) {
+      rotaryEncoder();
+      if (abs(rtCounter) < turnDegreeB) {
+        myservo.write(0);
+      } else {
+        myservo.writeMicroseconds(stopSpeed);
+        rtCounter = 0;
+        break;
+      }
+    }
   } else {
-    // turn clockwise to get liquid B
-    myservo.write(180);
-    delay(turnTimeB);
-    // stop for 5 sec
-    myservo.writeMicroseconds(stopSpeed);
-    delay(5000);
+    // turn counterclockwise to get liquid B, in max. 15 sec
+    for (int servoTimer = 0; servoTimer < 150000; servoTimer += 50) {
+      rotaryEncoder();
+      if (abs(rtCounter) < turnDegreeB) {
+        myservo.write(180);
+      } else {
+        myservo.writeMicroseconds(stopSpeed);
+        rtCounter = 0;
+        break;
+      }
+    }
   }
+  delay(5000);  // wait 5 sec for valve; use other funcs later
 
   // the other solenoid valve dispsenses liquid B
 
-  // turn to home position and stop
-  myservo.write(180);
-  delay(turnTimeBack);
-  // stop for 5 sec
-  myservo.writeMicroseconds(stopSpeed);
-  
+  // turn counterclockwise to home position and stop
+  for (int servoTimer = 0; servoTimer < 150000; servoTimer += 50) {
+    rotaryEncoder();
+    if (abs(rtCounter) < turnDegreeBack) {
+      myservo.write(180);
+    } else {
+      myservo.writeMicroseconds(stopSpeed);
+      rtCounter = 0;
+      break;
+    }
+  }
+
+
 
 }

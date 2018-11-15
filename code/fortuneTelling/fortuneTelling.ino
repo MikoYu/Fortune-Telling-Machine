@@ -1,15 +1,14 @@
 /*
-   Nov 13 Tuesday
+   Nov 14 Wednesday
    - got two motors work on the same UNO board;
+   - used photocells to fine home position
 
+   in need:
    both:
-   - need sensors for locating:
-      - servo turns depend on the time it costs -> positions are not precise;
-      - no home positions, can't calibrate.
-   - replace delay functions.
    - need mechanisms to shutdown while running; still, keep only one motor running at a time.
 
    servo (6V / 7.2V):
+   - use turns depend on the time it costs -> positions are not precise;
    - not stable each time at the beginning; need to figure out why.
    - may change a smarter way to rotate to its target (to take shorter time.)
 
@@ -34,6 +33,14 @@ const int stepperLdrPin = A1;
 int servoLdrReading, stepperLdrReading;
 const int ldrThreshold = 250;
 
+// set up the rotatry encoder
+#define outputA 6
+#define outputB 7
+
+int rtCounter = 0;
+int aState;
+int aLastState;
+
 //////////// setting up the servo ////////////
 
 Servo myservo;
@@ -53,7 +60,7 @@ int homeB = 4;
 
 // to calculate turning direction and time; all distances are depended on A
 int distanceA, distanceB, distanceBack;
-int turnTimeA, turnTimeB, turnTimeBack;
+int turnDegreeA, turnDegreeB, turnDegreeBack;
 
 //////////// setting up the stepper ////////////
 
@@ -78,22 +85,30 @@ int stepCount = 0;
 void setup() {
   // initialize the serial port
   Serial.begin(9600);
-  Serial.println("starts working");
+  Serial.println("initializing...");
 
-  // make the buttons' pin an input
+  // servo info
+  myservo.attach(12);
+  // Initially the servo must be stopped
+  myservo.writeMicroseconds(stopSpeed);
+
+  // make the buttons/ldrs/rotary encoder pins as inputs
   pinMode(servoBtnPin, INPUT);
   pinMode(stepperBtnPin, INPUT);
   pinMode(servoLdrPin, INPUT);
   pinMode(stepperLdrPin, INPUT);
+  pinMode (outputA, INPUT);
+  pinMode (outputB, INPUT);
 
-  // servo info
-  myservo.attach(6);
-  // Initially the servo must be stopped
-  myservo.writeMicroseconds(stopSpeed);
+  // Reads the initial state of the outputA
+  aLastState = digitalRead(outputA);
+
+  Serial.println("starts working");
+
 }
 
 void loop() {
-  
+
   // read the state of the button and check if it is pressed
   if (digitalRead(servoBtnPin) == HIGH) {
     Serial.println("servo button on");
