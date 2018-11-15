@@ -1,7 +1,4 @@
-
-void servoProcess() {
-
-
+void servoLiquidDispensing() {
 
   // pick the liquid for A and B randomly
   solA = int(random(0, solCounts));
@@ -27,7 +24,7 @@ void servoProcess() {
   // turn to get liquid A
   if (solA == 0) {
     // Keep still for 5 sec
-    myservo.writeMicroseconds(1415);
+    myservo.writeMicroseconds(stopSpeed);
     delay(5000);
   }
   else {
@@ -35,7 +32,7 @@ void servoProcess() {
     myservo.write(0);
     delay(turnTimeA);
     // stop for 5 sec
-    myservo.writeMicroseconds(1415);
+    myservo.writeMicroseconds(stopSpeed);
     delay(5000);
   }
 
@@ -44,7 +41,7 @@ void servoProcess() {
   // turn to get liquid B
   if (distanceB == 0) {
     // leep still for 5 sec
-    myservo.writeMicroseconds(1415);
+    myservo.writeMicroseconds(stopSpeed);
     delay(5000);
   }
   else if (distanceB > 0) {
@@ -52,14 +49,14 @@ void servoProcess() {
     myservo.write(0);
     delay(turnTimeB);
     // stop for 5 sec
-    myservo.writeMicroseconds(1415);
+    myservo.writeMicroseconds(stopSpeed);
     delay(5000);
   } else {
     // turn clockwise to get liquid B
     myservo.write(180);
     delay(turnTimeB);
     // stop for 5 sec
-    myservo.writeMicroseconds(1415);
+    myservo.writeMicroseconds(stopSpeed);
     delay(5000);
   }
 
@@ -69,8 +66,7 @@ void servoProcess() {
   myservo.write(180);
   delay(turnTimeBack);
   // stop for 5 sec
-  myservo.writeMicroseconds(1415);
-  Serial.println("liquid part done");
-
+  myservo.writeMicroseconds(stopSpeed);
+  
 
 }

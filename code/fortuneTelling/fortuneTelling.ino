@@ -31,7 +31,8 @@ const int stepperBtnPin = 3;
 // set up the ldrs for home locating; the cell + 10K pulldown
 const int servoLdrPin = A0;
 const int stepperLdrPin = A1;
-int servoLdrReading, servoLdrReading;
+int servoLdrReading, stepperLdrReading;
+const int ldrThreshold = 250;
 
 //////////// setting up the servo ////////////
 
@@ -39,6 +40,7 @@ Servo myservo;
 
 //time for a whole round; not precise when scaling down
 #define TURN_TIME 1600
+const int stopSpeed = 1415;
 
 // for random liquid selection
 int solA, solB, solAforB;
@@ -68,7 +70,7 @@ int patternCounts = 4; // change counts here
 
 //////////// setting up multitasking ////////////
 unsigned long previousMillis = 0;
-const long ldrInterval = 60;
+const long ldrInterval = 50;
 int stepCount = 0;
 
 //////////// start running ////////////
@@ -87,50 +89,25 @@ void setup() {
   // servo info
   myservo.attach(6);
   // Initially the servo must be stopped
-  myservo.writeMicroseconds(1415);
+  myservo.writeMicroseconds(stopSpeed);
 }
 
 void loop() {
-
-  unsigned long currentMillis = millis();
-
-  if (currentMillis - previousMillis >= sensorInterval) {
-    previousMillis = currentMillis;
-
-    // read ldr data
-    servoLdrReading = analogRead(servoLdrPin);
-    stepperLdrReading = analogRead(stepperLdrPin);
-    Serial.print("servo ldr reading = ");
-    Serial.println(servoLdrReading);
-    Serial.print("stepper ldr reading = ");
-    Serial.println(stepperLdrReading);
-
-
-    // machine process
-
-    // read the state of the button and check if it is pressed
-    if (digitalRead(servoBtnPin) == HIGH) {
-      Serial.println("servo button on");
-
-      // check if need to go back to home position (A: sol no.1; B: sol no. 5)
-      if (servoLdrReading > 300) {
-        myservo.write(0);
-      }
-
-      servoProcess();
-    }
-
-    // delay in between reads for stability
-    delay(1);
-
-    // read the state of the button and check if it is pressed
-    if (digitalRead(stepperBtnPin) == HIGH) {
-      Serial.println("stepper button on");
-      stepperProcess();
-    }
-
-    // delay in between reads for stability
-    delay(1);
-
+  
+  // read the state of the button and check if it is pressed
+  if (digitalRead(servoBtnPin) == HIGH) {
+    Serial.println("servo button on");
+    servoProcess();
   }
+  delay(1); // delay in between reads for stability
+
+  // read the state of the button and check if it is pressed
+  if (digitalRead(stepperBtnPin) == HIGH) {
+    Serial.println("stepper button on");
+    stepperProcess();
+  }
+  delay(1); // delay in between reads for stability
+
+
+}
 
