@@ -24,7 +24,6 @@ void servoLiquidDispensing() {
   if (solA == 0) {
     // Keep still for 5 sec
     myservo.writeMicroseconds(stopSpeed);
-    delay(5000);
   }
   else {
     // turn clockwise to get liquid A, in max. 15 sec
@@ -38,10 +37,8 @@ void servoLiquidDispensing() {
         break;
       }
     }
-
-    delay(5000);  // wait 5 sec for valve; use other funcs later
-
   }
+  delay(liquidDispensingTime);  // wait 5 sec for valve; use other funcs later
 
   // the solenoid valve dispsenses liquid A
 
@@ -49,7 +46,6 @@ void servoLiquidDispensing() {
   if (distanceB == 0) {
     // leep still for 5 sec
     myservo.writeMicroseconds(stopSpeed);
-    delay(5000);
   }
   else if (distanceB > 0) {
     // turn clockwise to get liquid B, in max. 15 sec
@@ -76,7 +72,7 @@ void servoLiquidDispensing() {
       }
     }
   }
-  delay(5000);  // wait 5 sec for valve; use other funcs later
+  delay(liquidDispensingTime);  // wait 5 sec for valve; use other funcs later
 
   // the other solenoid valve dispsenses liquid B
 

@@ -48,6 +48,7 @@ Servo myservo;
 //time for a whole round; not precise when scaling down
 #define TURN_TIME 1600
 const int stopSpeed = 1415;
+const int liquidDispensingTime = 7000;
 
 // for random liquid selection
 int solA, solB, solAforB;
@@ -76,9 +77,11 @@ int pattern;
 int patternCounts = 4; // change counts here
 
 //////////// setting up multitasking ////////////
+
 unsigned long previousMillis = 0;
 const long ldrInterval = 50;
 int stepCount = 0;
+
 
 //////////// start running ////////////
 
