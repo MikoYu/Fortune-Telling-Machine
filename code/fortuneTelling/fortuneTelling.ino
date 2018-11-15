@@ -2,13 +2,13 @@
    Nov 14 Wednesday
    - got two motors work on the same UNO board;
    - used photocells to fine home position
+   - servo with precise locating funcs with a rotary encoder;
 
    in need:
    both:
    - need mechanisms to shutdown while running; still, keep only one motor running at a time.
 
    servo (6V / 7.2V):
-   - use turns depend on the time it costs -> positions are not precise;
    - not stable each time at the beginning; need to figure out why.
    - may change a smarter way to rotate to its target (to take shorter time.)
 
