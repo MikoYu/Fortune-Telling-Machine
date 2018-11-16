@@ -1,11 +1,11 @@
 void servoProcess() {
 
-  Serial.println("liquid part starts");
+  Serial.println("liquid process starts");
   
   servoFindhome();
   servoLiquidDispensing();
   servoFindhome();
 
-  Serial.println("liquid part done");
+  Serial.println("liquid process done");
   
 }

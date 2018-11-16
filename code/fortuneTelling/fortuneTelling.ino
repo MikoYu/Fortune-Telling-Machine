@@ -1,16 +1,19 @@
 /*
-   Nov 14 Wednesday
-   - used photocells to find home position
-   - servo with precise locating funcs with a rotary encoder
-   - stepper can be shutdown
+   Nov 16 Friday
+   - make the random selection "random" by using analog reading on A5 as new random seed
+   - the servo uses shorter routes to rotate
+   - no delay()s for both servo and stepper; both can be shutdown
+   - delete home finding process for the stepper (no need)
 
+   - add new functions for clearer process
+   - move some const declarations into sub files 
+
+   notes: codes can be compiled but the whole system is not tested yet (due to campus closure :((( )
+   
    in need:
 
-   
    servo (6V / 7.2V):
-   - need mechanisms to be shutdown while running
-   - not stable each time at the beginning; need to figure out why.
-   - may change a smarter way to rotate to its target (to take shorter time.)
+   - sometimes not stable at the beginning; need to figure out why
 
    stepper (6 - 12V):
    - more pattern variations.
@@ -25,60 +28,57 @@
 #include <Servo.h>
 #include <Stepper.h>
 
-// set up the buttons
-const int servoBtnPin = 2;
-const int stepperBtnPin = 3;
+//////////// setting up the inputs/outputs ////////////
 
-// set up the ldrs for home locating; the cell + 10K pulldown
+// the motors
+const int servoPin = 12;
+// stepper's in later sections
+
+// the buttons
+const int servoBtnPin = 2;
+const int stepperBtnPin = 4;
+
+// the ldrs for home locating; (the cell + 10K pulldown)
 const int servoLdrPin = A0;
 const int stepperLdrPin = A1;
 int servoLdrReading, stepperLdrReading;
 const int servoLdrThreshold = 250;
 const int stepperLdrThreshold = 350;
 
-// set up the rotatry encoder
+// for random seed
+const int seedPin = A5;
+ 
+// the rotatry encoder
 #define outputA 6
 #define outputB 7
-
 int rtCounter = 0;
 int aState;
-int aLastState;
+int aLastState; 
 
 //////////// setting up the servo ////////////
 
 Servo myservo;
 
-//time for a whole round; not precise when scaling down
+// set up defult constants (ms per round; stop speed)
 #define TURN_TIME 1600
 const int stopSpeed = 1415;
-const int liquidDispensingTime = 7000;
-
-// for random liquid selection
-int solA, solB, solAforB;
-const int solCounts = 8;
-
-// home position of A and B; constant right now
-int homeA = 0;
-int homeB = 4;
-// if defining current positions of A & B, posB = (posA + 4) % 8
-
-// to calculate turning direction and time; all distances are depended on A
-int distanceA, distanceB, distanceBack;
-int turnDegreeA, turnDegreeB, turnDegreeBack;
 
 //////////// setting up the stepper ////////////
 
+// set up defult constants (steps per revolution)
 const int stepsPerRevolution = 200;
+
+// stepper/driver on pin 8, 9, 10, 11
 Stepper moldStepper(stepsPerRevolution, 8, 9, 10, 11);
 
-// to randomly select a pattern
-int pattern;
-int patternCounts = 4; // change counts here
 
 //////////// setting up multitasking ////////////
 
-unsigned long previousMillis = 0;
+unsigned long ldrPreviousMillis = 0;
+unsigned long servoPreviousMillis = 0;
 const long ldrInterval = 50;
+unsigned long currentMillis = millis();
+
 
 //////////// start running ////////////
 
@@ -88,7 +88,7 @@ void setup() {
   Serial.println("initializing...");
 
   // servo info
-  myservo.attach(12);
+  myservo.attach(servoPin);
   // Initially the servo must be stopped
   myservo.writeMicroseconds(stopSpeed);
 
@@ -97,11 +97,14 @@ void setup() {
   pinMode(stepperBtnPin, INPUT);
   pinMode(servoLdrPin, INPUT);
   pinMode(stepperLdrPin, INPUT);
-  pinMode (outputA, INPUT);
-  pinMode (outputB, INPUT);
+  pinMode(outputA, INPUT);
+  pinMode(outputB, INPUT);
 
-  // Reads the initial state of the outputA
-  aLastState = digitalRead(outputA);
+  // initial readings
+  // use the input on A5 as random seed, to make the selection seem more "random" 
+  randomSeed(analogRead(seedPin));
+  // read the initial state of its outputA
+  aLastState = digitalRead(outputA); 
 
   Serial.println("starts working");
 
