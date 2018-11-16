@@ -40,10 +40,8 @@ const int stepperBtnPin = 4;
 
 // the ldrs for home locating; (the cell + 10K pulldown)
 const int servoLdrPin = A0;
-const int stepperLdrPin = A1;
-int servoLdrReading, stepperLdrReading;
+int servoLdrReading;
 const int servoLdrThreshold = 250;
-const int stepperLdrThreshold = 350;
 
 // for random seed
 const int seedPin = A5;
@@ -75,8 +73,8 @@ Stepper moldStepper(stepsPerRevolution, 8, 9, 10, 11);
 //////////// setting up multitasking ////////////
 
 unsigned long ldrPreviousMillis = 0;
-unsigned long servoPreviousMillis = 0;
 const long ldrInterval = 50;
+unsigned long servoPreviousMillis = 0;
 unsigned long currentMillis = millis();
 
 
@@ -96,7 +94,6 @@ void setup() {
   pinMode(servoBtnPin, INPUT);
   pinMode(stepperBtnPin, INPUT);
   pinMode(servoLdrPin, INPUT);
-  pinMode(stepperLdrPin, INPUT);
   pinMode(outputA, INPUT);
   pinMode(outputB, INPUT);
 
