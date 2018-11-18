@@ -1,50 +1,64 @@
 void servoFindhome() {
 
-  if (currentMillis - ldrPreviousMillis >= ldrInterval) {
-    ldrPreviousMillis = currentMillis;
+  // read ldr data
+  servoLdrReading = analogRead(servoLdrPin);
 
-    // read ldr data
-    servoLdrReading = analogRead(servoLdrPin);
+  Serial.print("servo ldr reading = ");
+  Serial.println(servoLdrReading);
 
-    Serial.print("servo ldr reading = ");
-    Serial.println(servoLdrReading);
+  // check if need to go back to home position (A: sol no.1; B: sol no. 5)
+  if (servoLdrReading > servoLdrThreshold) {
+    currentMillis = millis();
+    servoPreviousMillis = currentMillis;
+    deltaMillis = currentMillis - servoPreviousMillis;
 
-    // check if need to go back to home position (A: sol no.1; B: sol no. 5)
-    if (servoLdrReading > servoLdrThreshold) {
+    for (int i = 0; i < 300; i += 1) {
 
-      servoPreviousMillis = currentMillis;
+      //////////// cases to stop the servo ////////////
+      if (i > 20 && digitalRead(servoBtnPin) == HIGH) {
+        servoShutdown = true;
+        Serial.println("forced shutdown");
+      }
 
-      for (int servoTimer = 0; servoTimer < 2000; servoTimer += 100) {
-        if (currentMillis - servoPreviousMillis < 50) {
-          myservo.write(0);
-        } else if (currentMillis - servoPreviousMillis < 100) {
-          myservo.write(stopSpeed);
-        } else {
-          servoPreviousMillis = currentMillis;
-        }
+      if (deltaMillis >= 5000) {
+        servoShutdown = true;
+        Serial.println("servo can't find home");
 
-        servoLdrReading = analogRead(servoLdrPin);
-        Serial.print("servo ldr reading = ");
-        Serial.println(servoLdrReading);
+      }
 
-        if (servoLdrReading <= servoLdrThreshold) {
-          Serial.println("servo back home");
-          break;
-        }
+      if (servoShutdown == true) {
+        myservo.writeMicroseconds(stopSpeed);
+        Serial.println("servo stops");
+        break;
+      }
 
-        if (digitalRead(servoBtnPin) == HIGH) {
-          myservo.write(stopSpeed);
-          break;
-        }
+      //////////// finding home ////////////
+      currentMillis = millis();
+      deltaMillis = currentMillis - servoPreviousMillis;
 
+      if (deltaMillis % 100 < 50) {
+        myservo.write(0);
+      } else if (deltaMillis % 100 < 100) {
+        myservo.writeMicroseconds(stopSpeed);
+      }
+
+      servoLdrReading = analogRead(servoLdrPin);
+      Serial.print("servo ldr reading = ");
+      Serial.println(servoLdrReading);
+
+      if (servoLdrReading <= servoLdrThreshold) {
+        Serial.println("servo back home");
+        myservo.writeMicroseconds(stopSpeed);
+        break;
       }
 
     }
 
-    else {
-      Serial.println("servo already at home");
-    }
-
   }
+
+  else {
+    Serial.println("servo already at home");
+  }
+
 }
 

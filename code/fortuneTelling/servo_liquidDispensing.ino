@@ -24,20 +24,28 @@ void servoLiquidDispensing() {
   // turn to get liquid A
   Serial.print("to A: \t");
   servoWayfinding(homeA, solA);
-  delay(liquidDispensingTime);  // wait for valve; use other funcs later
+  Serial.println("arrive at A");
 
-  // the solenoid valve dispsenses liquid A
+  if (servoShutdown == false) {
+    Serial.println("delaying for liquid A dispensing; change later");
+    delay(liquidDispensingTime);  // wait for valve; use other funcs later
+  }
 
   // turn to get liquid B
   Serial.print("to B: \t");
   servoWayfinding(solA, solAforB);
-  delay(liquidDispensingTime);  // wait for valve; use other funcs later
+  Serial.println("arrive at B");
 
-  // the other solenoid valve dispsenses liquid B
+  if (servoShutdown == false) {
+    Serial.println("delaying for liquid B dispensing; change later");
+    delay(liquidDispensingTime);  // wait for valve; use other funcs later
+  }
+
 
   // turn counterclockwise to home position and stop
-  Serial.print("Back home: \t");
+  Serial.print("Go home: \t");
   servoWayfinding(solAforB, homeA);
+  Serial.println("back");
 
 }
 
@@ -49,71 +57,102 @@ void servoWayfinding(int pos1, int pos2) {
   int turnDegree;
   int servoSpeed;
 
-  Serial.print("distCw: "); Serial.print(distCw); Serial.print("\t");
-
-  switch (distCw) {
-    // when pos1 = pos2, turn a little bit and turn back to notify
-    case 0:
-      Serial.println("case: still");
-      turnDegree = 3;
-      servoSpeed = 0;
-      servoRotating(turnDegree, servoSpeed, 5000);
-      turnDegree = 3;
-      servoSpeed = 180;
-      servoRotating(turnDegree, servoSpeed, 5000);
-      break;
-
-    // in the following cases, turn clockwise to get liquid, in max. 10s
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-      Serial.print("case: cw\t");
-      turnDegree = distCw * 5;
-      servoSpeed = 0;
-      servoRotating(turnDegree, servoSpeed, 10000);
-      break;
-
-    // in the following cases, turn counterclockwise to get liquid, in max. 10s
-    case 5:
-    case 6:
-    case 7:
-      Serial.print("case: ccw\t");
-      turnDegree = (8 - distCw) * 5;
-      servoSpeed = 180;
-      servoRotating(turnDegree, servoSpeed, 10000);
-      break;
-
+  if (servoShutdown == true) {
+    Serial.println("following process terminated");
   }
 
-  Serial.print("turnDegree: "); Serial.print(turnDegree); Serial.print("\t");
-  Serial.print("servoSpeed: "); Serial.print(servoSpeed); Serial.println("\t");
+  else {
+
+    Serial.print("distCw: "); Serial.print(distCw); Serial.print("\t");
+
+    switch (distCw) {
+      // when pos1 = pos2, turn a little bit and turn back to notify
+      case 0:
+        Serial.println("case: still");
+        turnDegree = 3;
+        servoSpeed = 0;
+        servoRotating(turnDegree, servoSpeed);
+        turnDegree = 3;
+        servoSpeed = 180;
+        servoRotating(turnDegree, servoSpeed);
+        break;
+
+      // in the following cases, turn clockwise to get liquid, in max. 10s
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+        Serial.print("case: cw\t");
+        turnDegree = distCw * 5;
+        servoSpeed = 0;
+        servoRotating(turnDegree, servoSpeed);
+        break;
+
+      // in the following cases, turn counterclockwise to get liquid, in max. 10s
+      case 5:
+      case 6:
+      case 7:
+        Serial.print("case: ccw\t");
+        turnDegree = (8 - distCw) * 5;
+        servoSpeed = 180;
+        servoRotating(turnDegree, servoSpeed);
+        break;
+
+    }
+
+  }
 
 }
 
 
-void servoRotating(int degree, int angleSpeed, int maxTime) {
-  // maxTime should >= 50;
-  for (int servoTimer = 0; servoTimer < maxTime; servoTimer += 50) {
-    rotaryEncoder();
-    if (abs(rtCounter) < degree) {
-      myservo.write(angleSpeed);
-    } else {
-      myservo.writeMicroseconds(stopSpeed);
-      rtCounter = 0;
-      break;
+
+void servoRotating(int degree, int angleSpeed) {
+
+  if (servoShutdown == true) {
+    Serial.println("following process terminated");
+  } else {
+
+    Serial.print("turnDegree: "); Serial.print(degree); Serial.print("\t");
+    Serial.print("servoSpeed: "); Serial.print(angleSpeed); Serial.println("\t");
+
+    currentMillis = millis();
+    servoPreviousMillis = currentMillis;
+
+    for (int i = 0; i < 100000; i += 1) {
+      currentMillis = millis();
+      deltaMillis = currentMillis - servoPreviousMillis;
+
+      //////////// cases to stop the servo ////////////
+      if (deltaMillis >= 10000) {
+        Serial.println("rotary encoder error, can't find the liquid");
+        servoShutdown = true;
+      }
+
+      // can be shutdown immediately during the process
+      if (deltaMillis > 500 && digitalRead(servoBtnPin) == HIGH) {
+        servoShutdown = true;
+        Serial.println("forced shutdown");
+      }
+
+
+      if (servoShutdown == true) {
+        myservo.writeMicroseconds(stopSpeed);
+        break;
+      }
+
+      //////////// rotate to find the liquid ////////////
+      rotaryEncoder();
+      //Serial.println(rtCounter);
+      if (abs(rtCounter) < degree) {
+        myservo.write(angleSpeed);
+      } else {
+        myservo.writeMicroseconds(stopSpeed);
+        rtCounter = 0;
+        break;
+      }
+
     }
-
-    // for forced shutdown
-    if (digitalRead(servoBtnPin) == HIGH) {
-      myservo.writeMicroseconds(stopSpeed);
-      break;
-    }
-
-
   }
 }
-
-
 
 

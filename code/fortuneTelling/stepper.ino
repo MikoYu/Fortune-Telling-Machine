@@ -1,14 +1,16 @@
-// counting steps to avoid delay()s
-int stepCount = 0;
-
 // to randomly select a pattern
 int pattern;
 int patternCounts = 4; // change counts here
+
+// for forced shutdown
+bool stepperShutdown = false;
 
 void stepperProcess() {
   Serial.println("pattern process starts");
   stepperPattern();
   Serial.println("pattern process done");
+  Serial.println();
+  delay(500);
 }
 
 //////////// other functions ///////////
@@ -17,6 +19,7 @@ void stepperPattern() {
   // Pick a pattern program randomly
   pattern = int(random(1, patternCounts + 1));
   Serial.println(pattern);
+  stepperShutdown = false;
 
   // Exert the randomly selected program
   switch (pattern) {
@@ -48,12 +51,29 @@ void stepperPattern() {
 
 }
 
-void stepperRotation(int stepperSpeed, int stepperRounds, int stepperSteps) {
-  moldStepper.setSpeed(stepperSpeed);
-  for (int i = 0; i < stepsPerRevolution * stepperRounds; i++) {
-    moldStepper.step(stepperSteps);
-    if (digitalRead(stepperBtnPin) == HIGH) {
-      break;
+void stepperRotation(int stepperSpeed, float stepperRounds, int stepperSteps) {
+
+  if (stepperShutdown == true) {
+    Serial.println("following process terminated");
+  } else {
+
+    moldStepper.setSpeed(stepperSpeed);
+    for (int i = 0; i < stepsPerRevolution * stepperRounds; i++) {
+
+      //////////// cases to stop the stepper ////////////
+      // can be shutdown immediately during the process (only after i = 25 for stability)
+      if (i > 25 && digitalRead(stepperBtnPin) == HIGH) {
+        stepperShutdown = true;
+      }
+
+      if (stepperShutdown == true) {
+        Serial.println("forced shutdown");
+        break;
+      }
+
+      //////////// rotation ////////////
+      moldStepper.step(stepperSteps);
+
     }
   }
 }
