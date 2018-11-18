@@ -8,7 +8,7 @@ void pixelStartShow(int i) {
     case 1:
       Serial.println("scanning the question");
       scan();
-      colorWipe(strip.Color(0, 0, 0), 50);
+      colorWipe(strip.Color(0, 0, 0), 0);
       break;
     case 2:
       Serial.println("producing the anwser");
