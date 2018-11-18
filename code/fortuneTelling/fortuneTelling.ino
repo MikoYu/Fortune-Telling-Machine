@@ -71,6 +71,26 @@ const int stepsPerRevolution = 200;
 Stepper moldStepper(stepsPerRevolution, 8, 9, 10, 11);
 
 
+//////////// setting up the neopixel ////////////
+
+#include <Adafruit_NeoPixel.h>
+#define pixelBtnPin   4    // Digital pin connected to the button. This will control the modes of different cases.
+#define PIXEL_PIN    5    // Digital pin connected to the NeoPixels.
+#define PIXEL_COUNT 60
+
+// Parameter 1 = number of pixels in strip,  neopixel stick has 8
+// Parameter 2 = pin number (most are valid)
+// Parameter 3 = pixel type flags, add together as needed:
+//   NEO_RGB     Pixels are wired for RGB bitstream
+//   NEO_GRB     Pixels are wired for GRB bitstream, correct for neopixel stick
+//   NEO_KHZ400  400 KHz bitstream (e.g. FLORA pixels)
+//   NEO_KHZ800  800 KHz bitstream (e.g. High Density LED strip), correct for neopixel stick
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
+
+bool oldState = HIGH;
+int showType = 0;
+int pos = 0, dir = 1;
+
 //////////// start running ////////////
 
 void setup() {
@@ -89,12 +109,16 @@ void setup() {
   pinMode(servoLdrPin, INPUT);
   pinMode(outputA, INPUT);
   pinMode(outputB, INPUT);
+  pinMode(pixelBtnPin, INPUT_PULLUP);
 
   // initial readings
   // use the input on A5 as random seed, to make the selection seem more "random"
   randomSeed(analogRead(seedPin));
   // read the initial state of its outputA
   aLastState = digitalRead(outputA);
+
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
 
   Serial.println("starts working");
 
@@ -116,6 +140,26 @@ void loop() {
   }
   delay(1); // delay in between reads for stability
 
+
+  // Get current button state.
+  bool newState = digitalRead(pixelBtnPin);
+  // Check if state changed from high to low (button press).
+  if (newState == LOW && oldState == HIGH) {
+    // Short delay to debounce button.
+    delay(20);
+    // Check if button is still low after debounce.
+    newState = digitalRead(pixelBtnPin);
+    if (newState == LOW) {
+      colorWipe(strip.Color(0, 0, 0), 0);
+      pixelStartShow(showType);
+      showType++;
+      if (showType > 4) {
+        showType = 0;
+      }
+    }
+  }
+  // Set the last button state to the old state.
+  oldState = newState;
 
 }
 
