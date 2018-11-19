@@ -35,12 +35,21 @@ void colorWipe(uint32_t c, uint8_t wait) {
 void scan() {
   for (int i = 0; i < 127; i++) {
 
-    strip.setPixelColor(pos - 4, strip.Color(120, 127, 150)); // Dark red
-    strip.setPixelColor(pos - 3, strip.Color(120, 150, 150)); // Medium red
-    strip.setPixelColor(pos - 2, strip.Color(120, 180, 150)); // Center pixel is brightest
-    strip.setPixelColor(pos - 1, strip.Color(120, 200, 150)); // Medium red
-    strip.setPixelColor(pos , strip.Color(120, 255, 150)); // Dark red
-
+   // strip.setPixelColor(pos - 4, strip.Color(110, 127, 110));
+   // strip.setPixelColor(pos - 3, strip.Color(120, 150, 120)); 
+   // strip.setPixelColor(pos - 2, strip.Color(130, 180, 130)); 
+   // strip.setPixelColor(pos - 1, strip.Color(140, 200, 140)); 
+   // strip.setPixelColor(pos , strip.Color(150, 255, 150)); 
+    //strip.setPixelColor(pos - 4, strip.Color(150, 184, 249)); 
+    //strip.setPixelColor(pos - 3, strip.Color(199, 216, 249)); 
+    //strip.setPixelColor(pos - 2, strip.Color(194, 220, 243)); 
+    //strip.setPixelColor(pos - 1, strip.Color(171, 234, 215)); 
+    //strip.setPixelColor(pos , strip.Color(160, 242, 202));
+    strip.setPixelColor(pos - 4, strip.Color(94, 137, 221)); 
+    strip.setPixelColor(pos - 3, strip.Color(199, 216, 249)); 
+    strip.setPixelColor(pos - 2, strip.Color(127, 127, 127)); 
+    strip.setPixelColor(pos - 1, strip.Color(161, 234, 215)); 
+    strip.setPixelColor(pos , strip.Color(97, 205, 156)); 
     strip.show();
     delay(30);
 

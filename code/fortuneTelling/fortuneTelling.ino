@@ -76,7 +76,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(pixelCount, pixelPin, NEO_GRB + NEO_
 
 // for case/style control
 bool pixelBtnLastState = HIGH;
-bool pixelBtnState;
+bool pixelBtnState = LOW;
 int showType = 0;
 int pos = 0, dir = 1;
 
@@ -148,6 +148,7 @@ void loop() {
     if (pixelBtnState == LOW) {
       colorWipe(strip.Color(0, 0, 0), 0);
       pixelStartShow(showType);
+      Serial.println(showType);
       showType++;
       if (showType > 4) {
         showType = 0;
