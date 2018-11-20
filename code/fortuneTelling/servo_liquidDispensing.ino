@@ -8,7 +8,7 @@ int homeB = 4;
 // to define current positions of A & B, posB = (posA + 4) % 8
 
 // waiting time when dispensing liquid
-const int liquidDispensingTime = 7000;
+const int liquidDispensingTime = 10000;
 
 //////////// functions ////////////
 void servoLiquidDispensing() {

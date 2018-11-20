@@ -19,7 +19,7 @@ void setup() {
   pinMode(stepperBtnPin, INPUT);
 
   // better to control a "home" position (with a sensor)
-  
+
 }
 
 void loop() {

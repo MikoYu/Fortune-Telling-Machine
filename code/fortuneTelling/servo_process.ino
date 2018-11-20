@@ -6,7 +6,7 @@ void servoProcess() {
 
   servoFindhome();
   servoLiquidDispensing();
-  servoFindhome();
+  //servoFindhome();
 
   Serial.println("liquid process done");
   Serial.println();
