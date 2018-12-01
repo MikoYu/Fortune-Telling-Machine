@@ -1,7 +1,5 @@
 int solenoidPin = 9; //solenid valve pin; don't have to be PWM
 int pushButton = 2;
-unsigned long buttonTimer = 0;
-unsigned long currentMillis = 0;
 
 // 7213 - 2037 = 5176
 // 5797 - 646 = 5151
@@ -16,14 +14,12 @@ void setup() {
 }
 
 void loop() {
-  currentMillis = millis();
-  Serial.println(currentMillis);
 
   // read the state of the button and check if it is pressed
   if (digitalRead(pushButton) == HIGH) {
     digitalWrite(solenoidPin, HIGH); // switch the valve ON
     Serial.println("valve ON");
-    //delay (500);
+    delay (6500);
 
   } else {
 
