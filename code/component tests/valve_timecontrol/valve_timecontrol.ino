@@ -1,4 +1,4 @@
-int solenoidPin = 9; //solenid valve pin; don't have to be PWM
+int solenoidPin = 8; //solenid valve pin; don't have to be PWM
 int pushButton = 2;
 
 // 7213 - 2037 = 5176
