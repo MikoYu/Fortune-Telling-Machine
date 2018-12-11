@@ -1,11 +1,15 @@
+//////////// GENERAL ////////////
+int machineCaseNo = 4;
+
+//////////// FOR NEOPIXEL ////////////
 #include <Adafruit_NeoPixel.h>
 #include <EEPROM.h>
 
-#define NUM_LEDS 60
-#define PIN 6
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
+#define NUM_LEDS 90
+#define LED_PIN 4
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-#define BUTTON 3
+#define LED_BUTTON 3
 byte selectedEffect = 0; //A byte stores an 8-bit unsigned number, from 0 to 255.
 byte currentEffect;
 const int offEffect = 0;
@@ -16,11 +20,12 @@ unsigned long timerStartMillis = 0;
 long interval = 5000;
 
 // for liquid selection
-int liqColor1, liqColor2;
+//int liqColor1, liqColor2;
+//int liqColor[] = {0, 0};
 // colors for red, orange-ish red, orange, yellow, green, some green, blue, indigo, violet, & white
-int reds[] = {0xFF, 0xE2, 0xFF, 0xFF, 0x00, 0x96, 0x00, 0x4B, 0x8B, 0xff};
-int greens[] = {0x00, 0x57, 0x7F, 0xFF, 0xFF, 0xbf, 0x00, 0x00, 0x00, 0xff};
-int blues[] = {0x00, 0x1E, 0x00, 0x00, 0x00, 0x33, 0xff, 0x82, 0xFF, 0xff};
+//int reds[] = {0xFF, 0xE2, 0xFF, 0xFF, 0x00, 0x96, 0x00, 0x4B, 0x8B, 0xff};
+//int greens[] = {0x00, 0x57, 0x7F, 0xFF, 0xFF, 0xbf, 0x00, 0x00, 0x00, 0xff};
+//int blues[] = {0x00, 0x1E, 0x00, 0x00, 0x00, 0x33, 0xff, 0x82, 0xFF, 0xff};
 
 // for gradient
 int startPixel = 0;
@@ -28,11 +33,59 @@ int sp = 0;
 
 // for random seed
 const int seedPin = A5;
+const int busyPin = 7;
+
+// /*
+//////////// FOR DPMiniPlayer ////////////
+#include <SoftwareSerial.h>
+#include <DFMiniMp3.h>
+
+// implement a notification class, its member methods will get called
+class Mp3Notify {
+  public:
+    static void OnError(uint16_t errorCode) {
+      // see DfMp3_Error for code meaning
+      Serial.println();
+      Serial.print("Com Error ");
+      Serial.println(errorCode);
+    }
+
+    static void OnPlayFinished(uint16_t globalTrack) {
+      Serial.println();
+      Serial.print("Play finished for #");
+      Serial.println(globalTrack);
+    }
+
+    static void OnCardOnline(uint16_t code) {
+      Serial.println();
+      Serial.print("Card online ");
+      Serial.println(code);
+    }
+
+    static void OnCardInserted(uint16_t code) {
+      Serial.println();
+      Serial.print("Card inserted ");
+      Serial.println(code);
+    }
+
+    static void OnCardRemoved(uint16_t code) {
+      Serial.println();
+      Serial.print("Card removed ");
+      Serial.println(code);
+    }
+};
+
+// instance a DFMiniMp3 object
+SoftwareSerial secondarySerial(6, 5); // RX, TX
+DFMiniMp3<SoftwareSerial, Mp3Notify> mp3(secondarySerial);
+
+// */
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("start");
+  Serial.println("initializing...");
 
+  //////////// NEOPIXEL ////////////
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 
@@ -40,16 +93,36 @@ void setup() {
   // EEPROM Get: Get values from EEPROM and prints as float on serial.
   currentEffect = selectedEffect;
 
-  digitalWrite (BUTTON, HIGH);  // internal pull-up resistor
-  attachInterrupt (digitalPinToInterrupt (BUTTON), changeEffect, CHANGE); // pressed
+  pinMode(seedPin, INPUT);
+  pinMode(busyPin, INPUT);
+  pinMode(LED_BUTTON, INPUT);
+
+  digitalWrite (LED_BUTTON, HIGH);  // internal pull-up resistor
+  attachInterrupt (digitalPinToInterrupt (LED_BUTTON), changeEffect, CHANGE); // pressed
 
   // use the input on A5 as random seed, to make the selection seem more "random"
   randomSeed(analogRead(seedPin));
+
+  // /*
+  //////////// DPMiniPlayer ////////////
+  mp3.begin();
+
+  uint16_t volume = mp3.getVolume();
+  Serial.print("volume ");
+  Serial.println(volume);
+  mp3.setVolume(30);
+
+  uint16_t count = mp3.getTotalTrackCount();
+  Serial.print("files ");
+  Serial.println(count);
+  //  */
+
+  Serial.println("starting...");
 }
 
 void loop() {
 
-  if (selectedEffect > 6) {
+  if (selectedEffect > machineCaseNo) {
     selectedEffect = 0;
     currentEffect = 0;
     EEPROM.put(0, 0);
@@ -70,108 +143,35 @@ void loop() {
 
 
     case 1:
-      // scan the question (meteorRain)
-      Serial.println("scanning");
-      meteorRain(0xff, 0xff, 0xff, 10, 64, true, 30);
-      /********* ending not ideal, need changes **********/
-
-      // calculating the answer (Sparkle)
-      Serial.println("calculating");
-
-      timerStartMillis = millis();
-      currentMillis = millis();
-      interval = 5000;
-
-      while (currentMillis - timerStartMillis <= interval) {
-        Sparkle(0xff, 0xff, 0xff, 50); // white
-        currentMillis = millis();
-      }
-
-      // calculation done
-      Serial.println("calculation done");
-      // Strobe - Color (red, green, blue), number of flashes, flash speed, end pause
-      Strobe(0xff, 0xff, 0xff, 10, 50, 1000);
-
+      Serial.println("start working");
+      machineScan();
       break;
 
     case 2:
       // choose first liquid
       Serial.println("choose the first liquid");
-
-      // randomly select a color and show it with FadeInOut
-      liqColor1 = int(random(0, 10));
-      Serial.print("liqColor1: "); Serial.println(liqColor1);
-      FadeInOut(reds[liqColor1], greens[liqColor1], blues[liqColor1]); // white
+      machineLiquid(1);
       break;
 
     case 3:
       // choose second liquid
       Serial.println("choose the second liquid");
-
-      // randomly select a color and show it with FadeInOut
-      liqColor2 = int(random(0, 10));
-      Serial.print("liqColor2: "); Serial.println(liqColor2);
-      FadeInOut(reds[liqColor2], greens[liqColor2], blues[liqColor2]); // white
+      machineLiquid(2);
       break;
 
     case 4:
       // mixing process
-      // tweaked from gradient3
-      startPixel = 0;
-      sp = 0;
+      Serial.println("making process");
+      //mp3.playMp3FolderTrack(3);
+      machineMaking();
 
-      timerStartMillis = millis();
-      currentMillis = millis();
-      interval = 5000;
-
-      while (currentMillis - timerStartMillis <= interval) {
-        for ( int i = 0; i < NUM_LEDS; i++ ) {
-          strip.setPixelColor(sp, 100, i * 2, 255 );
-
-          if ( sp == NUM_LEDS )
-            sp = 0;
-          else
-            sp++;
-        }
-        strip.show();
-
-        startPixel++;
-        if ( startPixel == 60 )
-          startPixel = 0;
-        currentMillis = millis();
-
-        delay(15);
-      }
-
-      strip.clear();
-      strip.show();
       break;
 
-
-    case 5:
-      // 1 min countdown
-      // colorWipe - Color (red, green, blue), speed delay
-      Serial.println("counting down: light up one by one");
-      colorWipe(0xff, 0xff, 0xff, 1000); //white
-      Serial.println("light off one by one");
-      colorWipe(0x00, 0x00, 0x00, 10); //off
-      break;
-
-    case 6:
-      // present the answer
-      Serial.println("present the answer (NewITT-CenterToOutside");
-      CenterToOutside(0xff, 0xff, 0xff, 8, 50, 250);
-      strip.clear();
-      strip.show();
-      break;
-
-//    case 7:
-//      // anything for test
-//      // Twinkle - Color (red, green, blue), count, speed delay, only one twinkle (true/false)
-//      Serial.println("Twinkle");
-//      Twinkle(0xff, 0x00, 0x00, 10, 100, false);
+//    case 5: // test only
+//      Serial.println("testing effects");
 //
-//      break;
+//      machineTest();
+
 
   }
 
@@ -180,12 +180,13 @@ void loop() {
 }
 
 void changeEffect() {
-  if (digitalRead (BUTTON) == HIGH) {
+  if (digitalRead (LED_BUTTON) == HIGH) {
     // no use; but after adding this a bug doesn't show up
     // the bug: if press button when all off, sometimes crush
     //Serial.println("next effect");
 
     selectedEffect++;
+    mp3.stop();
     EEPROM.put(0, selectedEffect);
     asm volatile ("  jmp 0");
   }
