@@ -3,8 +3,8 @@
 #include <Adafruit_NeoPixel.h>
 #include <EEPROM.h>
 
-#define NUM_LEDS 60 
-#define PIN 6 
+#define NUM_LEDS 90 
+#define PIN 4 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 #define BUTTON 2

@@ -31,6 +31,17 @@ void machineLiquid(int liqNo) {
   Serial.println("play track 2");
   mp3.playMp3FolderTrack(2);  // sd:/mp3/0002.mp3
 
+  // randomly choose one valve as the working one
+  workingValve = int(random(1, 7));
+  Serial.print("valve no. "); Serial.print(workingValve); Serial.print(" ON");
+  workingPin = valvePins[workingValve - 1];
+  Serial.print(" pin no. "); Serial.print(workingPin);
+  Serial.println();
+
+  // switch on working pin
+  digitalWrite(workingPin, HIGH); // switch the valve ON
+//  delay (6500);  
+
   // randomly select a color and show it with FadeInOut
   //  liqColor[liqNo] = int(random(0, 10));
   //  Serial.print("liqColor"); Serial.print(liqNo); Serial.print(": ");Serial.println(liqColor[liqNo]);
@@ -38,6 +49,11 @@ void machineLiquid(int liqNo) {
   FadeInOut(255, 255, 255); // white
   FadeInOut(255, 255, 255);
   FadeInOut(255, 255, 255);
+  // control time with the light effect, need testing
+
+  // switch off the valve and stop the music
+  digitalWrite(workingPin, LOW); // switch the valve OFF
+  Serial.println("valve OFF");
   mp3.stop();
 
 }

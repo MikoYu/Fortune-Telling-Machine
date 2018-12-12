@@ -1,6 +1,17 @@
 //////////// GENERAL ////////////
 int machineCaseNo = 4;
 
+//////////// VALVES ////////////
+// set up constant pins
+const int valvePins[] = {8, 9, 10, 11, 12, 13};
+
+// set up variables for the working valve
+int workingValve = 1;
+int workingPin = 8;
+
+// for random seed
+const int seedPin = A5;
+
 //////////// FOR NEOPIXEL ////////////
 #include <Adafruit_NeoPixel.h>
 #include <EEPROM.h>
@@ -9,7 +20,7 @@ int machineCaseNo = 4;
 #define LED_PIN 4
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-#define LED_BUTTON 3
+#define BUTTON 2
 byte selectedEffect = 0; //A byte stores an 8-bit unsigned number, from 0 to 255.
 byte currentEffect;
 const int offEffect = 0;
@@ -31,14 +42,14 @@ long interval = 5000;
 int startPixel = 0;
 int sp = 0;
 
-// for random seed
-const int seedPin = A5;
-const int busyPin = 7;
 
 // /*
 //////////// FOR DPMiniPlayer ////////////
 #include <SoftwareSerial.h>
 #include <DFMiniMp3.h>
+
+// pin that tells whether any music is playing
+const int busyPin = 7;
 
 // implement a notification class, its member methods will get called
 class Mp3Notify {
@@ -85,6 +96,27 @@ void setup() {
   Serial.begin(9600);
   Serial.println("initializing...");
 
+  // set up pin modes
+  pinMode(BUTTON, INPUT);
+  for (int i = 0; i < 6; i++) {
+    pinMode(valvePins[i], OUTPUT);
+  }
+  pinMode(workingPin, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(seedPin, INPUT);
+  pinMode(busyPin, INPUT);
+
+  digitalWrite (BUTTON, HIGH);  // internal pull-up resistor
+  attachInterrupt (digitalPinToInterrupt (BUTTON), changeEffect, CHANGE); // pressed
+
+  // use the input on A5 as random seed, to make the selection seem more "random"
+  randomSeed(analogRead(seedPin));
+
+  //////////// valves ////////////
+  for (int i = 0; i < 6; i++) {
+    digitalWrite(valvePins[i], LOW); // switch all the valves OFF
+  }
+
   //////////// NEOPIXEL ////////////
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
@@ -93,17 +125,6 @@ void setup() {
   // EEPROM Get: Get values from EEPROM and prints as float on serial.
   currentEffect = selectedEffect;
 
-  pinMode(seedPin, INPUT);
-  pinMode(busyPin, INPUT);
-  pinMode(LED_BUTTON, INPUT);
-
-  digitalWrite (LED_BUTTON, HIGH);  // internal pull-up resistor
-  attachInterrupt (digitalPinToInterrupt (LED_BUTTON), changeEffect, CHANGE); // pressed
-
-  // use the input on A5 as random seed, to make the selection seem more "random"
-  randomSeed(analogRead(seedPin));
-
-  // /*
   //////////// DPMiniPlayer ////////////
   mp3.begin();
 
@@ -115,8 +136,8 @@ void setup() {
   uint16_t count = mp3.getTotalTrackCount();
   Serial.print("files ");
   Serial.println(count);
-  //  */
 
+  //////////// everything's ready ////////////
   Serial.println("starting...");
 }
 
@@ -167,10 +188,10 @@ void loop() {
 
       break;
 
-//    case 5: // test only
-//      Serial.println("testing effects");
-//
-//      machineTest();
+      //    case 5: // test only
+      //      Serial.println("testing effects");
+      //
+      //      machineTest();
 
 
   }
@@ -180,7 +201,7 @@ void loop() {
 }
 
 void changeEffect() {
-  if (digitalRead (LED_BUTTON) == HIGH) {
+  if (digitalRead (BUTTON) == HIGH) {
     // no use; but after adding this a bug doesn't show up
     // the bug: if press button when all off, sometimes crush
     //Serial.println("next effect");
