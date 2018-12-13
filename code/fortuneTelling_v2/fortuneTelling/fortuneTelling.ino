@@ -1,5 +1,18 @@
 //////////// GENERAL ////////////
-int machineCaseNo = 4;
+const int button = 2;
+
+int numMachineEffects = 4;
+byte selectedEffect = 0;
+byte currentEffect;
+const int offEffect = 0;
+
+// set random seed
+const int seedPin = A5;
+
+// for time control
+unsigned long currentMillis = 0;
+unsigned long timerStartMillis = 0;
+long interval = 5000;
 
 //////////// VALVES ////////////
 // set up constant pins
@@ -9,41 +22,18 @@ const int valvePins[] = {8, 9, 10, 11, 12, 13};
 int workingValve = 1;
 int workingPin = 8;
 
-// for random seed
-const int seedPin = A5;
-
 //////////// FOR NEOPIXEL ////////////
 #include <Adafruit_NeoPixel.h>
 #include <EEPROM.h>
 
-#define NUM_LEDS 90
-#define LED_PIN 4
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
-
-#define BUTTON 2
-byte selectedEffect = 0; //A byte stores an 8-bit unsigned number, from 0 to 255.
-byte currentEffect;
-const int offEffect = 0;
-
-// add time control
-unsigned long currentMillis = 0;
-unsigned long timerStartMillis = 0;
-long interval = 5000;
-
-// for liquid selection
-//int liqColor1, liqColor2;
-//int liqColor[] = {0, 0};
-// colors for red, orange-ish red, orange, yellow, green, some green, blue, indigo, violet, & white
-//int reds[] = {0xFF, 0xE2, 0xFF, 0xFF, 0x00, 0x96, 0x00, 0x4B, 0x8B, 0xff};
-//int greens[] = {0x00, 0x57, 0x7F, 0xFF, 0xFF, 0xbf, 0x00, 0x00, 0x00, 0xff};
-//int blues[] = {0x00, 0x1E, 0x00, 0x00, 0x00, 0x33, 0xff, 0x82, 0xFF, 0xff};
+const int numPixels = 95;
+const int neoPixelPin = 4;
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(numPixels, neoPixelPin, NEO_GRB + NEO_KHZ800);
 
 // for gradient
 int startPixel = 0;
 int sp = 0;
 
-
-// /*
 //////////// FOR DPMiniPlayer ////////////
 #include <SoftwareSerial.h>
 #include <DFMiniMp3.h>
@@ -90,34 +80,36 @@ class Mp3Notify {
 SoftwareSerial secondarySerial(6, 5); // RX, TX
 DFMiniMp3<SoftwareSerial, Mp3Notify> mp3(secondarySerial);
 
-// */
 
+//////////// PROGRAM STARTS ////////////
 void setup() {
+  
   Serial.begin(9600);
   Serial.println("initializing...");
 
+  //////////// general ////////////
   // set up pin modes
-  pinMode(BUTTON, INPUT);
+  pinMode(button, INPUT);
+  pinMode(seedPin, INPUT);
+
+  digitalWrite (button, HIGH);  // internal pull-up resistor
+  attachInterrupt (digitalPinToInterrupt (button), changeEffect, CHANGE); // pressed
+
+  randomSeed(analogRead(seedPin));
+
+  //////////// valves ////////////
   for (int i = 0; i < 6; i++) {
     pinMode(valvePins[i], OUTPUT);
   }
   pinMode(workingPin, OUTPUT);
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(seedPin, INPUT);
-  pinMode(busyPin, INPUT);
 
-  digitalWrite (BUTTON, HIGH);  // internal pull-up resistor
-  attachInterrupt (digitalPinToInterrupt (BUTTON), changeEffect, CHANGE); // pressed
-
-  // use the input on A5 as random seed, to make the selection seem more "random"
-  randomSeed(analogRead(seedPin));
-
-  //////////// valves ////////////
   for (int i = 0; i < 6; i++) {
     digitalWrite(valvePins[i], LOW); // switch all the valves OFF
   }
 
   //////////// NEOPIXEL ////////////
+  pinMode(neoPixelPin, OUTPUT);
+  
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 
@@ -126,6 +118,8 @@ void setup() {
   currentEffect = selectedEffect;
 
   //////////// DPMiniPlayer ////////////
+  pinMode(busyPin, INPUT);
+
   mp3.begin();
 
   uint16_t volume = mp3.getVolume();
@@ -142,26 +136,23 @@ void setup() {
 }
 
 void loop() {
-
-  if (selectedEffect > machineCaseNo) {
+  
+  if (selectedEffect > numMachineEffects) {
     selectedEffect = 0;
     currentEffect = 0;
     EEPROM.put(0, 0);
     // if statement has to be at first to make sure selectEffect is from 0 to 6.
   }
 
-  Serial.println(selectedEffect);
-  Serial.println(currentEffect);
-
+  Serial.print("Effect now: "); Serial.println(selectedEffect);
 
   switch (currentEffect) {
     case 0:
       // led off
       Serial.println("all off");
       //allOff();   // Black/off
-      colorWipe(strip.Color(0, 0, 0), 50);
+      colorWipe(0, 0, 0, 50);
       break;
-
 
     case 1:
       Serial.println("start working");
@@ -185,15 +176,7 @@ void loop() {
       Serial.println("making process");
       //mp3.playMp3FolderTrack(3);
       machineMaking();
-
       break;
-
-      //    case 5: // test only
-      //      Serial.println("testing effects");
-      //
-      //      machineTest();
-
-
   }
 
   currentEffect = 0;
@@ -201,16 +184,10 @@ void loop() {
 }
 
 void changeEffect() {
-  if (digitalRead (BUTTON) == HIGH) {
-    // no use; but after adding this a bug doesn't show up
-    // the bug: if press button when all off, sometimes crush
-    //Serial.println("next effect");
-
+  if (digitalRead (button) == HIGH) {
     selectedEffect++;
     mp3.stop();
     EEPROM.put(0, selectedEffect);
     asm volatile ("  jmp 0");
   }
 }
-
-

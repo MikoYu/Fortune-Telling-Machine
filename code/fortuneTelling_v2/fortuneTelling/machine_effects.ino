@@ -3,13 +3,12 @@ void machineScan() {
   Serial.println("play track 1");
   mp3.playMp3FolderTrack(1);  // sd:/mp3/0001.mp3
 
-  // scan the question (meteorRain)
+  // scan the question
   Serial.println("scanning");
   meteorRain(0xff, 0xff, 0xff, 10, 64, true, 20);
 
   // calculating the answer (Sparkle)
   Serial.println("calculating");
-
   timerStartMillis = millis();
   currentMillis = millis();
   interval = 5000;
@@ -21,7 +20,6 @@ void machineScan() {
 
   // calculation done
   Serial.println("calculation done");
-  // Strobe - Color (red, green, blue), number of flashes, flash speed, end pause
   Strobe(0xff, 0xff, 0xff, 10, 50, 8000);
 }
 
@@ -40,19 +38,9 @@ void machineLiquid(int liqNo) {
 
   // switch on working pin
   digitalWrite(workingPin, HIGH); // switch the valve ON
-//  delay (6500);  
-
-  // randomly select a color and show it with FadeInOut
-  //  liqColor[liqNo] = int(random(0, 10));
-  //  Serial.print("liqColor"); Serial.print(liqNo); Serial.print(": ");Serial.println(liqColor[liqNo]);
-  //  FadeInOut(reds[liqColor[liqNo]], greens[liqColor[liqNo]], blues[liqColor[liqNo]]); // white
-  FadeInOut(255, 255, 255); // white
-  FadeInOut(255, 255, 255);
-  FadeInOut(255, 255, 255);
-  // control time with the light effect, need testing
-
-  // switch off the valve and stop the music
-  digitalWrite(workingPin, LOW); // switch the valve OFF
+  // switch off the valve and stop the music; time controlled by how long the light effect takes 
+  FadeInOut(255, 255, 255, 6); // white
+  digitalWrite(workingPin, LOW);
   Serial.println("valve OFF");
   mp3.stop();
 
@@ -66,8 +54,6 @@ void machineMaking() {
   while (digitalRead(busyPin) == false) {
     gradient();
   }
-  //  strip.clear();
-  //  strip.show();
 
   // background noise
   mp3.playMp3FolderTrack(5);  // sd:/mp3/0005.mp3
@@ -86,20 +72,21 @@ void machineMaking() {
 
   // background noise
   mp3.playMp3FolderTrack(7);  // sd:/mp3/0007.mp3
-  strip.setBrightness(24);
-  RunningLights(0xff, 0xff, 0xff, 130);  // a tiny little bit long
-  strip.setBrightness(255);
+  Serial.println("play bgd (no.7)");
+  RunningLights(0x36, 0x36, 0x36, 130);  // a tiny little bit long
 
   // bubbles
-  mp3.playMp3FolderTrack(8);  // sd:/mp3/0008.mp3
+  playTrack(8);
+  Serial.println("play bubbles(no.8) with new method");
   while (digitalRead(busyPin) == false) {
     gradient();
   }
 
   // background noise
   mp3.playMp3FolderTrack(9);  // sd:/mp3/0009.mp3
+  Serial.println("play bgd (no.9)");
   strip.setBrightness(24);
-  RunningLights(0xff, 0xff, 0xff, 130);  // a tiny little bit long
+  RunningLights(0xff, 0xff, 0xff, 130);
 
   strip.clear();
   strip.show();
@@ -107,14 +94,15 @@ void machineMaking() {
 
   // 1 min countdown and present answer
   mp3.playMp3FolderTrack(10);  // sd:/mp3/0010.mp3
+  Serial.println("play countdown (no.10)");
   // colorWipe - Color (red, green, blue), speed delay
   Serial.println("counting down: light up one by one");
-  colorWipe(0xff, 0xff, 0xff, 666); //white
+  colorWipe(0xff, 0xff, 0xff, 600); //white
   Serial.println("light off one by one");
   colorWipe(0x00, 0x00, 0x00, 10); //off
   // present the answer
-  Serial.println("present the answer (NewITT-CenterToOutside");
-  CenterToOutside(0xff, 0xff, 0xff, 8, 50, 250);
+  Serial.println("present the answer (CenterToOutside");
+  CenterToOutside(0xff, 0xff, 0xff, 8, 60, 250);
   strip.clear();
   strip.show();
 
@@ -132,28 +120,5 @@ void machineBass() {
                   3000);
     currentMillis = millis();
   }
-
 }
-
-//void machineBgdRunningLights() {
-//  strip.setBrightness(24);
-//  RunningLights(0xff, 0xff, 0xff, 88);
-//  RunningLights(0xff, 0xff, 0xff, 88);
-//  strip.setBrightness(255);
-//}
-
-//void machineSnowSparkle(int interval) {
-//  timerStartMillis = millis();
-//  currentMillis = millis();
-//
-//  while (currentMillis - timerStartMillis < interval) {
-//    SnowSparkle(0x10, 0x10, 0x10, 20, random(100, 1000));
-//    currentMillis = millis();
-//  }
-//
-//}
-
-//void machineTest() {
-//
-//}
 
