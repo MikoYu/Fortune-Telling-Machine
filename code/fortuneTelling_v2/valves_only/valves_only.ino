@@ -1,11 +1,22 @@
+/* 
+ *  This program is for valves installation (inital release tests,) 
+ *  deintallation (release all liquid,) or other tests.
+ *  
+ *  Adjust the value of releaseTime and/or workingValve to suit different needs.
+ *  
+ */
+
 //////////// VALVES ////////////
 // set up constant pins
 const int valvePins[] = {8, 9, 10, 11, 12, 13};
 
 // set up variables for the working valve
-int workingValve = 1;
-int workingPin = 8;
+int workingValve = 6;
+int workingPin = 13;
 int button = 2;
+
+// set up release time
+int releaseTime = 10000;
 
 void setup() {
   Serial.begin(9600);
@@ -35,7 +46,7 @@ void loop() {
 
     // switch on working pin
     digitalWrite(workingPin, HIGH); // switch the valve ON
-    delay(1000);
+    delay(releaseTime);
     digitalWrite(workingPin, LOW);
     Serial.println("valve OFF");
 
@@ -45,6 +56,7 @@ void loop() {
     } else {
       workingValve = 1;
     }
+
   }
 
 }
