@@ -2,27 +2,44 @@
 
 ## The project
 
-The *Fortune-Telling Machine* is a speculative, design fiction project about belief for a CCA MFA Design studio course: Carry-On Manufacturing (co-taught by Matthew Boyko & Helen Ip.) It illustrates an alien civilization that sends back a machine to the present for historical research. This machine can response to a question about a person's future with an edible cube, whose message can only be fully understood by being eaten. The design fiction is shown through a 5-to-10-min performative experience. The interaction between the audience and the machine is facilitated by an alien priest, an alien machine operator, and a human translator. 
+The *Fortune-Telling Machine* is a speculative, design fiction project about belief for a CCA MFA Design studio course: Carry-On Manufacturing (co-taught by Matthew Boyko & Helen Ip.) It posits an alien civilization that sends back a machine to the present for historical research. This machine can response to a question about a person's future with an edible cube, whose message can only be fully understood by being eaten. The design fiction is shown through a 5-to-10-min performative experience. The interaction between the audience and the machine is facilitated by an alien priest, an alien machine operator, and a human translator. 
 
-*For more info about the project: [link to be updated].* 
+*For more project info: https://yumk.name/fortune-telling* 
 
 
 
 ## The machine and the codes
 
-This repository contains two versions of the Arduino codes for the Fortune-Telling Machine (in the "code" folder,) together with the music files for the second and most recent version (in the "music" folder.) Both versions use Arduino Uno boards to control the electronic components to show certain automaticity. However, the structures of the two machines and components used are largely different. 
+This repository contains the Arduino codes for two versions of the Fortune-Telling Machine, together with the music files for the second and most recent version. Both versions use Arduino Uno boards to control the electronic components to show certain automaticity. However, the structures of the two machines and components used are largely different. 
+
+
+
+### File Structure
+
+- "code":
+  - "component_test": 
+    - test codes for individual components used in either version
+  - "fortuneTelling_v1":
+    - "fortuneTelling": the main Arduino program for v1
+    - "neopixel": the separate program for an LED strip used on another Arduino
+  - "fortuneTelling_v2": 
+    - "fortuneTelling": the main Arduino program for v2
+    - "valves_only": a program that only controls the valves, can be used for testing the mechanism before using the main program, or releasing all the liquid after demonstrations. 
+- "music": the music files for v2
+
+
 
 ### Version 2 
 
 The most recent ver. machine has three stacking modules:
 
-- Box A on the top holds six inverted bottles of hot liquid. Each kind of liquid can flow through a tube to Box B, controlled by **an electric valve.** There is also a rectangular window at the bottom of the front side to reveal liquid movement. The window is surrounded by **an LED strip.** Together with **a sound speaker** attached inside, the LEDs show different effects to indicates machine calculation. Besides, **An Arduino Uno board** is placed in Box A. It can randomly select two kinds of liquid and switch between pre-determined sound/light effects.
+- Box A on the top holds six inverted bottles of hot liquid. Each kind of liquid can flow through a tube to Box B, controlled by **an electric valve.** There is also a rectangular window at the bottom of the front side to reveal liquid movement. The window is surrounded by **an LED strip.** Together with **a sound speaker** attached inside controlled by **a DF Player Mini**, the LEDs show different effects to indicates machine calculation. Besides, **an Arduino Uno board** is placed in Box A. It can randomly select two kinds of liquid and switch between pre-determined sound/light effects.
 - In the middle is Box B, the working space of the alien operator. Here placed the ingredients and most of the tools to quickly make the "answer" (an agar agar jelly.) A smaller window for presenting the final result is at the top on the front side. Also in Box B, the operator pushes **a button** to control the Arduino which consequently switches among different states.  
 - Finally, Box C, at the bottom, is the storage space for dry ice and other tools.
 
 ![structure](images/v2/structure.jpg)
 
-[^ Figure 1]: The v2 machine (left) and sketch (right). *---Image to be replaced---*
+fig.1:The v2 machine (left) and sketch (right). 
 
 
 
@@ -40,11 +57,9 @@ For this version, one Uno board controls all the components. There are two progr
 
 *[video to be uploaded]*
 
+*[schematic to be uploaded]*
 
-
-![schematic](images/v2/schematic.jpg)
-
-[^ Figure 2 ]: V2 schematic. *--- to be replaced with fritzing image---*
+//![schematic](images/v2/schematic.jpg) as fig.2
 
 
 
@@ -54,7 +69,7 @@ In terms of the mechanism, there are a lot of changes between the first and seco
 
 ![structure](images/v1/structure.jpg)
 
-[^figure 3 ]: The v1 prototype (left) and sketch (right). Eight liquid dispensers sit on the top in a circle. A black 360° servo motor (in the middle) drives a disc with two plugged funnels through a shaft and a rotary encoder on the other end of the shaft. Liquid and powder mixtures go down through two spiral tubes and come into the black mold resting on a platform drived by a stepper motor. There's also a neopixel loop sticked to the wood board under the dispensers. *---Image to be replaced---*
+fig.3: The v1 prototype (left) and sketch (right). Eight liquid dispensers sit on the top in a circle. A black 360° servo motor (in the middle) drives a disc with two plugged funnels through a shaft and a rotary encoder on the other end of the shaft. Liquid and powder mixtures go down through two spiral tubes and come into the black mold resting on a platform drived by a stepper motor. There's also a neopixel loop sticked to the wood board under the dispensers.
 
 
 
@@ -70,9 +85,11 @@ The operator does as follows:
 4. When the mixtures get closer to the end, the operator pushes the same button again for molding. The stepper motor will randomly select a pre-programmed movement. As the two mixtures go into the mold, they form a pattern.
 5. Cool down and demold.
 
-![schematic](images/v1/schematic.jpg)
 
-[^ figure 4]: V1 schematic. *--- to be replaced with fritzing image---*
+
+*[schematic to be updated]*
+
+![schematic](images/v1/schematic.jpg)
 
 
 
