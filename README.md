@@ -97,15 +97,3 @@ This version was later replaced because the mixtures are easily stuck in the tub
 
 
 
-## Credits
-
-### Libraries
-
-
-
-### Contributors
-
-
-
-
-
