@@ -14,7 +14,7 @@ The project posits an alien civilization that sends back a machine to the presen
 
 **For more project details:**
 
-- [Project description](project_description.md)
+- [**PROJECT DESCRIPTION**](project_description.md)
 - [Design process](https://drive.google.com/file/d/1VgLE5v_DhbejvS0L9a9aLpfb2G2ujM_3/view?usp=sharing)
 - Team members' individual documentations: [Diqing Wu](https://wudiqing.myportfolio.com/fortune-telling-machine), [Mingke Yu](https://yumk.name/fortune-telling)
 
