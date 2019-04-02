@@ -6,15 +6,13 @@ This repository contains the Arduino codes for two versions of the machine, toge
 
 
 
-## The project
+## A brief summary of the project
 
-It posits an alien civilization that sends back a machine to the present for historical research. This machine can response to a question about a person's future with an edible cube, whose message can only be fully understood by being eaten. The design fiction is shown through a 5-to-10-min performative experience. The interaction between the audience and the machine is facilitated by an alien priest, an alien machine operator, and a human ambassador. 
-
-![structure](images/project/main.jpg)
+The project posits an alien civilization that sends back a machine to the present for historical research. This machine can response to a question about a person's future with an edible cube, whose message can only be fully understood by being eaten. The design fiction is shown through a 5-to-10-min performative experience. The interaction between the audience and the machine is facilitated by an alien priest, an alien machine operator, and a human ambassador. 
 
 
 
-For more project details:
+**For more project details:**
 
 - [Project description](project_description.md)
 - [Design process](https://drive.google.com/file/d/1VgLE5v_DhbejvS0L9a9aLpfb2G2ujM_3/view?usp=sharing)
