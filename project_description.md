@@ -89,4 +89,4 @@ Lastly, we designed additional components that complete the experience, includin
 For more details:
 
 - [Design process](https://drive.google.com/file/d/1VgLE5v_DhbejvS0L9a9aLpfb2G2ujM_3/view?usp=sharing)
-- [Prototype info](#the-machine-and-the-codes)
+- [Prototype info](README.md/#the-machine-and-the-codes)
