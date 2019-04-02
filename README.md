@@ -1,31 +1,44 @@
-# Fortune-Telling Machine
+# Black Box: the fortune-telling machine
+
+The *Black Box* is a design fiction project about fortune-telling and its contemporary implications for a CCA MFA Design studio course: "Carry-On Manufacturing” in 2018 fall (co-taught by Matthew Boyko & Helen Ip.) 
+
+This repository contains the Arduino codes for two versions of the machine, together with the music files for the second version. 
+
+
 
 ## The project
 
-The *Fortune-Telling Machine* is a speculative, design fiction project about belief for a CCA MFA Design studio course: Carry-On Manufacturing (co-taught by Matthew Boyko & Helen Ip.) It posits an alien civilization that sends back a machine to the present for historical research. This machine can response to a question about a person's future with an edible cube, whose message can only be fully understood by being eaten. The design fiction is shown through a 5-to-10-min performative experience. The interaction between the audience and the machine is facilitated by an alien priest, an alien machine operator, and a human translator. 
+It posits an alien civilization that sends back a machine to the present for historical research. This machine can response to a question about a person's future with an edible cube, whose message can only be fully understood by being eaten. The design fiction is shown through a 5-to-10-min performative experience. The interaction between the audience and the machine is facilitated by an alien priest, an alien machine operator, and a human ambassador. 
 
-*For more project info: https://yumk.name/fortune-telling* 
+![structure](images/project/main.jpg)
 
 
 
-## The machine and the codes
+For more project details:
 
-This repository contains the Arduino codes for two versions of the Fortune-Telling Machine, together with the music files for the second and most recent version. Both versions use Arduino Uno boards to control the electronic components to show certain automaticity. However, the structures of the two machines and components used are largely different. 
+- [Project description](project_description.md)
+- [Design process](https://drive.google.com/file/d/1VgLE5v_DhbejvS0L9a9aLpfb2G2ujM_3/view?usp=sharing)
+- Team members' individual documentations: [Diqing Wu](https://wudiqing.myportfolio.com/fortune-telling-machine), [Mingke Yu](https://yumk.name/fortune-telling)
+
+
+
+## The working prototype
+
+This repository contains the Arduino codes of the machine’s prototypes, with the music files for the second and most recent version. Both versions use Arduino Uno boards to control the electronic components to show certain automaticity. However, the structures of the two machines and components used are largely different. 
 
 
 
 ### File Structure
 
-- "code":
-  - "component_test": 
-    - test codes for individual components used in either version
-  - "fortuneTelling_v1":
-    - "fortuneTelling": the main Arduino program for v1
-    - "neopixel": the separate program for an LED strip used on another Arduino
-  - "fortuneTelling_v2": 
-    - "fortuneTelling": the main Arduino program for v2
-    - "valves_only": a program that only controls the valves, can be used for testing the mechanism before using the main program, or releasing all the liquid after demonstrations. 
-- "music": the music files for v2
+- /code
+  - /component_test: test codes for individual components used in either version
+  - /fortuneTelling_v1
+    - /fortuneTelling: the main Arduino program for v1
+    - /neopixel: the separate program for an LED strip used on another Arduino
+  - /fortuneTelling_v2
+    - /fortuneTelling: the main Arduino program for v2
+    - /valves_only: a program that only controls the valves, can be used for testing the mechanism before using the main program, or releasing all the liquid after demonstrations. 
+- /music: the music files for v2
 
 
 
@@ -37,9 +50,9 @@ The most recent ver. machine has three stacking modules:
 - In the middle is Box B, the working space of the alien operator. Here placed the ingredients and most of the tools to quickly make the "answer" (an agar agar jelly.) A smaller window for presenting the final result is at the top on the front side. Also in Box B, the operator pushes **a button** to control the Arduino which consequently switches among different states.  
 - Finally, Box C, at the bottom, is the storage space for dry ice and other tools.
 
-![structure](images/v2/structure.jpg)
+![structure](images/v2/structure.png)
 
-fig.1:The v2 machine (left) and sketch (right). 
+fig.1:The v2 machine (left) and internal structure (right). 
 
 
 
@@ -55,11 +68,7 @@ For this version, one Uno board controls all the components. There are two progr
 
 
 
-*[video to be uploaded]*
-
 *[schematic to be uploaded]*
-
-//![schematic](images/v2/schematic.jpg) as fig.2
 
 
 
@@ -87,13 +96,4 @@ The operator does as follows:
 
 
 
-*[schematic to be updated]*
-
-![schematic](images/v1/schematic.jpg)
-
-
-
 This version was later replaced because the mixtures are easily stuck in the tubes.
-
-
-
