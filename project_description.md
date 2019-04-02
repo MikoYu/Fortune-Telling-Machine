@@ -6,7 +6,7 @@
 
 ![story](images/project/story.png)
 
-With this fictional yet somewhat conceivable premise, we intend to spark thinking about the deep-seated desire to know the unknowable future, particularly at a time when big data and ever-growing computational power are helping humans predict more and more. The project is primarily an inquiry into the cross-time, cross-regional, and cross-cultural prevalence of fortune-telling. Why is it so powerful? How does it function? What makes people find it believable or valid, even? Secondly, the project explores the idea that present-day gene-testing services could be fortune-telling in a new guise; scientism and techno-fetishism could be modern superstitions. Perhaps every generation of every society is imbued with some innate supernaturalism. Finally, the project poses the "determinism" question: what if accurate fortune-telling is possible? What if there exists a machine that can predict every detail of the future?
+With this fictional yet somewhat conceivable premise, we intend to spark thinking about the deep-seated desire to know the unknowable future, particularly at a time when big data and ever-growing computational power are helping humans predict more and more. The project is primarily an inquiry into the cross-time, cross-regional, and cross-cultural prevalence of fortune-telling. Why is it so powerful? How does it function? What makes people find it believable or valid, even? Secondly, the project explores the idea that present-day gene-testing services could be fortune-telling in a new guise; scientism and techno-fetishism could be modern superstitions. Perhaps every generation of every society is imbued with some innate supernaturalism. Finally, the project poses the "determinism" question: what if accurate fortune-telling is possible? What if there exists a machine that *can* predict every detail of the future?
 
 ![Black Box](images/project/main.jpg)
 
@@ -31,7 +31,7 @@ With the help of two Cubies and a human ambassador, each person has a chance to 
 
 ![answers](images/project/answers.jpg)
 
-The team's intention was to tell the design fiction through a performative experience, in order to provoke thinking about fortune-telling and belief in a contemporary context. Inspired by The Book of Answers by Carol Bolt, a book that can answer any question with ambiguous pieces of text, we decided to create a similar experience that also references the Delphi Oracle, astrology, tarot, and other forms of fortune-telling and divination. The Black Box's "answers" are, essentially, randomly generated. They are also innately vague, as they don't contain any words, but only variations of color, pattern, and taste. This stimulates the innate human tendency to find patterns and draw connections, thus making it possible to imbue the "answer" with subjective interpretations. We designed the machine, the recipe for the "answers," the costumes, and other props that enrich the scenario's context. Furthermore, we created an introductory video and selected outer-space music to help clarify the story and immerse the audience in it.
+The team's intention was to tell the design fiction through a performative experience, in order to provoke thinking about fortune-telling and belief in a contemporary context. Inspired by *The Book of Answers* by Carol Bolt, a book that can answer any question with ambiguous pieces of text, we decided to create a similar experience that also references the Delphi Oracle, astrology, tarot, and other forms of fortune-telling and divination. The Black Box's "answers" are, essentially, randomly generated. They are also innately vague, as they don't contain any words, but only variations of color, pattern, and taste. This stimulates the innate human tendency to find patterns and draw connections, thus making it possible to imbue the "answer" with subjective interpretations. We designed the machine, the recipe for the "answers," the costumes, and other props that enrich the scenario's context. Furthermore, we created an introductory video and selected outer-space music to help clarify the story and immerse the audience in it.
 
 ![storyboard](images/project/storyboard.jpg)
 
@@ -89,4 +89,4 @@ Lastly, we designed additional components that complete the experience, includin
 For more details:
 
 - [Design process](https://drive.google.com/file/d/1VgLE5v_DhbejvS0L9a9aLpfb2G2ujM_3/view?usp=sharing)
-- [Prototype info](README.md/#the-machine-and-the-codes)
+- [Prototype info](README.md#the-machine-and-the-codes)
