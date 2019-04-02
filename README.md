@@ -1,6 +1,6 @@
 # Black Box: the fortune-telling machine
 
-The *Black Box* is a design fiction project about fortune-telling and its contemporary implications for a CCA MFA Design studio course: "Carry-On Manufacturing” in 2018 fall (co-taught by Matthew Boyko & Helen Ip.) 
+The *Black Box* is a design fiction project about fortune-telling and its contemporary implications for studio course: "Carry-On Manufacturing” in 2018 fall at CCA (co-taught by Matthew Boyko & Helen Ip.) 
 
 This repository contains the Arduino codes for two versions of the machine, together with the music files for the second version. 
 
@@ -16,7 +16,7 @@ The project posits an alien civilization that sends back a machine to the presen
 
 - [**PROJECT DESCRIPTION**](project_description.md)
 - [Design process](https://drive.google.com/file/d/1VgLE5v_DhbejvS0L9a9aLpfb2G2ujM_3/view?usp=sharing)
-- Team members' individual documentations: [Diqing Wu](https://wudiqing.myportfolio.com/fortune-telling-machine), [Mingke Yu](https://yumk.name/fortune-telling)
+- Team credit: [Diqing Wu](https://wudiqing.myportfolio.com/fortune-telling-machine), [Mingke Yu](https://yumk.name/fortune-telling), Qian Zeng (links to individual documentations)
 
 
 
